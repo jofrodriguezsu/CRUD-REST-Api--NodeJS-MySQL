@@ -16,16 +16,20 @@ const getAllUsers = async () => {
 }
 
 const updateUser = async (id, name, email) => {
-  await db.execute(
+  const [result] = await db.execute(
     "UPDATE users SET name =?, email =? WHERE id =?",
     [name, email, id]
   )
+
+  return result.affectedRows
 }
 
 const deleteUser = async (id) => {
-  await db.execute(
+  const [result] = await db.execute(
     "DELETE FROM users WHERE id =?", [id]
   )
+
+  return result.affectedRows
 }
 
 module.exports = {
