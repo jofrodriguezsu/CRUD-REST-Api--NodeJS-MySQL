@@ -5,6 +5,7 @@ const router = require("./routes/userRoutes.js")
 
 const PORT = process.env.PORT || 3001
 
+app.use(express.json())
 app.use("/api", router)
 
 app.listen(PORT, ()=>{

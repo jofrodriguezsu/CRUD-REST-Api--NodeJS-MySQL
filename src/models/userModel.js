@@ -16,14 +16,14 @@ const getAllUsers = async () => {
 }
 
 const updateUser = async (id, name, email) => {
-  const [result] = await db.execute(
-    "UPDATE users SET name =?, email =?, WHERE id =?"
-    [id, name, email]
+  await db.execute(
+    "UPDATE users SET name =?, email =? WHERE id =?",
+    [name, email, id]
   )
 }
 
 const deleteUser = async (id) => {
-  const [result] = await db.execute(
+  await db.execute(
     "DELETE FROM users WHERE id =?", [id]
   )
 }
