@@ -1,10 +1,12 @@
 const user = require ("../models/userModel.js")
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   const {name, email} = req.body
 
   if(!name || !email){
-    return res.status(400).json({message: "Missing fields!"})
+    const err = new Error("missing field")
+    err.statusCode = 400
+    return next(err)
   }
 
   try{
@@ -13,29 +15,29 @@ exports.createUser = async (req, res) => {
   res.status(201).json({message: `User created successfully`, data: {id, name, email}})
   }
   catch(err){
-    console.error(err)
-    res.status(500).json({message: "Server error"})
+    next(err)
   }
 }
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = async (req, res, next) => {
 
   try{
   const users = await user.getAllUsers()
   res.status(200).json(users)
   }
   catch(err){
-    console.error(err)
-    res.status(500).json({message: "Server error"})
+    next(err)
   }
 }
 
-exports.updateUser = async(req, res) => {
+exports.updateUser = async(req, res, next) => {
   const {id} = req.params
   const {name, email} = req.body
 
   if(!name || !email){
-    return res.status(400).json({message: "Missing field(s)!"})
+    const err = new Error("Missing field!")
+    err.statusCode = 400
+    return next(err)
   }
 
   try{
@@ -43,36 +45,34 @@ exports.updateUser = async(req, res) => {
     const updatedRows = await user.updateUser(id, name, email)
 
     if(updatedRows === 0){
-      return res.status(404).json({message: "User not found"})
+      const err = new Error ("User not found")
+      err.statusCode = 404
+      return next(err)
     }
 
     res.status(200).json({message: "User updated successfully", data: {id, name, email}})
 
   }
   catch(err){
-    console.error(err)
-    res.status(500).json({message: "Server error"})
+    next(err)
   }
 }
 
-exports.deleteUser = async(req, res) =>{
+exports.deleteUser = async(req, res, next) =>{
   const {id} = req.params
-
-  if(!id){
-    return res.status(400).json({message: "Id not provided"})
-  }
   
   try{
     const rowDeleted = await user.deleteUser(id)
 
     if(rowDeleted === 0){
-      return res.status(404).json({message: "User not found"})
+      const err = new Error ("User not found")
+      err.statusCode = 404
+      return next(err)
     }
 
     res.status(200).json({message: "User deleted successfully"})
   }
   catch(err){
-    console.error(err)
-    res.status(500).json({message: "Server error"})
+    next(err)
   }
 }
